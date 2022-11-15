@@ -15,7 +15,10 @@ class DrinkResource extends JsonResource
             'description' => $this->resource->description,
             'owner' => $this->resource->user->name,
             'ingredients' => $this->resource->ingredients->map(function ($ingredient) {
-                return $ingredient->name;
+                return [
+                    'name' => $ingredient->name,
+                    'amount' => $ingredient->pivot->amount . ' ' . $ingredient->pivot->amount_unit
+                ];
             }),
             'published' => $this->resource->published,
             'saveCount' => $this->resource->save_count,
