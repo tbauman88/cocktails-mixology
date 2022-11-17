@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class IngredientResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,8 +14,9 @@ class IngredientResource extends JsonResource
      */
     public function toArray($request)
     {
-        return array_merge(parent::toArray($request), [
-            "drinks" => $this->resource->drinks->map(fn ($drink) => $drink->name)
+        return collect(parent::toArray($request))->except(["email_verified_at"])->merge([
+            "account" => $this->resource->account->only("bio"),
+            "drinks" => $this->resource->drinks->map(fn ($drink) => $drink->only("id", "name")),
         ]);
     }
 }

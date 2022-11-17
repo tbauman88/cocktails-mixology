@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DrinkController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,12 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 
-//Route::get('/drinks', [DrinkController::class, 'index'])->name('drinks');
-//Route::get('/ingredients', [IngredientController::class, 'index'])->name('ingredients');
-
-Route::resource('drinks', DrinkController::class)->only(['index', 'store']);
+Route::resource('user.drinks', UserController::class)->only(['index', 'show']);
+Route::resource('drinks', DrinkController::class)->only(['index', 'store', 'show']);
 Route::resource('ingredients', IngredientController::class)->only('index');
