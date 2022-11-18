@@ -10,15 +10,13 @@ class DrinkResource extends JsonResource
     {
         return [
             'name' => $this->resource->name,
-            'description' => $this->resource->description,
+            'description' => $this->resource->description ?? "",
             'owner' => $this->resource->user->name,
-            'ingredients' => $this->resource->ingredients->map(function ($ingredient) {
-                return [
-                    'name' => $ingredient->name,
-                    'amount' => $ingredient->pivot->amount . ' ' . $ingredient->pivot->amount_unit
-                ];
-            }),
-            'published' => $this->resource->published,
+            'ingredients' => $this->resource->ingredients->map(fn ($ingredient) => [
+                'name' => $ingredient->name,
+                'amount' => $ingredient->pivot->amount . ' ' . $ingredient->pivot->amount_unit
+            ]),
+            'public' => $this->resource->published === 1 ? true : false,
             'saveCount' => $this->resource->save_count,
             "created_at" => $this->resource->created_at,
             "updated_at" => $this->resource->updated_at

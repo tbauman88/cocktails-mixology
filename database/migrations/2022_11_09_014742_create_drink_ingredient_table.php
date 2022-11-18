@@ -13,7 +13,7 @@ class CreateDrinkIngredientTable extends Migration
      */
     public function up()
     {
-        Schema::create('drink_ingredients', function (Blueprint $table) {
+        Schema::create('drink_ingredient', function (Blueprint $table) {
             $table->id();
             $table->tinyText('amount');
             $table->tinyText('amount_unit');

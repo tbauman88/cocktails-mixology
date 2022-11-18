@@ -16,6 +16,6 @@ class Ingredient extends Model
 
     public function drinks(): BelongsToMany
     {
-        return $this->belongsToMany(Drink::class, "drink_ingredients", "ingredient_id", "drink_id");
+        return $this->belongsToMany(Drink::class);
     }
 }
