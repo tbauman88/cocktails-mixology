@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account;
 use App\Models\Drink;
 use App\Models\DrinkIngredient;
 use App\Models\Ingredient;
@@ -66,30 +67,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::factory()->create([
-            'name' => "Allie Eusebi",
-            'email' => "allie.eusebi@test.com",
-            'password' => Hash::make('password'),
-        ]);
+        User::factory()
+            ->hasAccount()
+            ->create([
+                "name" => "Allie Eusebi",
+                "email" => "allie.eusebi@cocktails.com",
+                'password' => Hash::make('password'),
+            ]);
 
-//        $drink = Drink::factory()->create([
-//            'name' => 'Manhattan',
-//            'owner' => $user->id
-//        ]);
-//
-//        $ingredients = Ingredient::factory(3)->sequence(
-//            ['name' => 'Gin'],
-//            ['name' => 'Campari'],
-//            ['name' => 'Sweet Vermouth'],
-//        )->create();
-//
-//        foreach ($ingredients as $ingredient) {
-//            DrinkIngredient::factory()->create([
-//                'drink_id' => $drink->id,
-//                'ingredient_id' => $ingredient->id,
-//                'amount' => '1',
-//                'amount_unit' => 'oz'
+//        User::factory()
+//            ->count(10)
+//            ->hasAccount()
+//            ->create([
+//                'password' => Hash::make('password'),
 //            ]);
-//        }
     }
 }
