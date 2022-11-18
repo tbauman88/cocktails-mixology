@@ -13,7 +13,7 @@ class DrinkFactory extends Factory
     public function definition(): array
     {
         return [
-            "name" => $this->faker->words(rand(1, 6), true),
+            "name" => $this->faker->unique()->words(rand(1, 6), true),
             "description" => $this->faker->paragraph(),
             "published" => $this->faker->boolean(),
             "save_count" => $this->faker->randomDigit()

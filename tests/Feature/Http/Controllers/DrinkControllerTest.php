@@ -5,14 +5,11 @@ namespace Tests\Feature\Http\Controllers;
 use App\Models\Drink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class DrinkControllerTest extends TestCase
 {
     use RefreshDatabase;
-
-//    use DatabaseTransactions;
 
     public function test_it_will_create_a_drink()
     {
@@ -36,5 +33,16 @@ class DrinkControllerTest extends TestCase
 
 
         $this->assertCount(6, Drink::all());
+    }
+
+    public function test_it_will_index_all_drinks()
+    {
+        $user1 = User::factory()->hasDrinks(10)->create();
+        User::factory()->hasDrinks(20)->create();
+
+        $this->actingAs($user1)
+            ->getJson(route('drinks.index'))
+            ->assertSuccessful()
+            ->assertJsonCount(30, null);
     }
 }
