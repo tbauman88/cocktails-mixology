@@ -21,8 +21,6 @@ class DrinkController extends Controller
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'owner' => $request->input('user'),
-//            'published' => $request->input('published'),
-//            'save_count' => $request->input('save_count')
         ]);
 
         $drink->save();
@@ -40,6 +38,6 @@ class DrinkController extends Controller
             $drink->ingredients()->attach([$created]);
         }
 
-        return response()->json(DrinkResource::make($drink));
+        return response()->json(DrinkResource::make($drink), JsonResponse::HTTP_CREATED);
     }
 }
