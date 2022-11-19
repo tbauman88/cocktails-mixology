@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDrinkRequest;
 use App\Http\Resources\DrinkResource;
 use App\Models\Drink;
 use App\Models\Ingredient;
@@ -15,9 +16,11 @@ class DrinkController extends Controller
         return response()->json(DrinkResource::collection(Drink::all()));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreDrinkRequest $request): JsonResponse
     {
-        $drink = new Drink([
+        $request->validated();
+
+        $drink = Drink::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'owner' => $request->input('user'),
