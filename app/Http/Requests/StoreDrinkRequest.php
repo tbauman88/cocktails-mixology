@@ -25,11 +25,8 @@ class StoreDrinkRequest extends FormRequest
     public function rules()
     {
         return [
-//            'name' => [
-//                Rule::unique('drinks'),
-//                Rule::requiredIf()
-//            ]
-            'name' => 'required|unique:drinks'
+            'name' => ['required', Rule::unique('drinks')],
+            'description' => ['nullable']
         ];
     }
 }

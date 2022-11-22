@@ -18,43 +18,34 @@ class DrinkControllerTest extends TestCase
 
         $this->assertCount(5, Drink::all());
 
-        $payload = [
-            "user" => $user->id,
-            "description" => "",
-            "name" => "Negroni",
-            "ingredients" => [
-                ["name" => "Gin", "amount" => "1", "unit" => "oz"],
-                ["name" => "Campari", "amount" => "1", "unit" => "oz"],
-                ["name" => "Sweet Vermouth", "amount" => "1", "unit" => "oz"]
-            ]
-        ];
+        $payload = $this->drinkPayload($user);
 
         $response = $this->actingAs($user)
             ->postJson(route('drinks.store'), $payload)
             ->assertCreated();
 
-
         $this->assertCount(6, Drink::all());
+        $this->assertIngredients($response);
+    }
 
-        $ingredients = Ingredient::query()->where('drink_id', $response->json('id'));
+    public function test_it_will_create_a_drink_makred_as_public()
+    {
+        $user = User::factory()->create();
 
-        foreach ($ingredients as $ingredient) {
-            $this->assertDatabaseHas('drink_ingredient', [
-                'drink_id' => $response->json('id'),
-                'ingredient_id' => $ingredient->id
-            ]);
-        }
+        $payload = array_merge($this->drinkPayload($user), ['published' => true]);
+
+        $this->actingAs($user)
+            ->postJson(route('drinks.store'), $payload)
+            ->assertCreated()
+            ->assertJsonFragment(['public' => true]);
     }
 
     public function test_it_will_throw_when_creating_a_duplicate_drink_name()
     {
-        $user = User::factory()
-            ->hasDrinks(1, ["name" => "Old Fashioned"])
-            ->create();
+        $user = User::factory()->hasDrinks(1, ["name" => "Old Fashioned"])->create();
 
         $payload = [
             "user" => $user->id,
-            "description" => "",
             "name" => $user->drinks->first()->name,
             "ingredients" => [
                 ["name" => "Gin", "amount" => "1", "unit" => "oz"],
@@ -65,17 +56,49 @@ class DrinkControllerTest extends TestCase
 
         $this->actingAs($user)
             ->postJson(route('drinks.store'), $payload)
-            ->assertUnprocessable();
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('name');
     }
 
     public function test_it_will_index_all_drinks()
     {
-        $user1 = User::factory()->hasDrinks(10)->create();
-        User::factory()->hasDrinks(20)->create();
+        $user = User::factory()->hasDrinks(10)->create();
+        Drink::factory(20)->forUser()->create();
 
-        $this->actingAs($user1)
+        $this->actingAs($user)
             ->getJson(route('drinks.index'))
             ->assertSuccessful()
-            ->assertJsonCount(30, null);
+            ->assertJsonCount(30);
+    }
+
+    public function test_it_will_update_drink_with_saved_count()
+    {
+        self::markTestSkipped();
+    }
+
+    private function assertIngredients($response)
+    {
+        $ingredients = Ingredient::query()->where('drink_id', $response->json('id'));
+
+        foreach ($ingredients as $ingredient) {
+            $this->assertDatabaseHas('drink_ingredient', [
+                'drink_id' => $response->json('id'),
+                'ingredient_id' => $ingredient->id
+            ]);
+        }
+    }
+
+    private function drinkPayload(User $user)
+    {
+        return [
+            "user" => $user->id,
+            "description" => "",
+            "name" => "Negroni",
+            "ingredients" => [
+                ["name" => "Gin", "amount" => "1", "unit" => "oz"],
+                ["name" => "Campari", "amount" => "1", "unit" => "oz"],
+                ["name" => "Sweet Vermouth", "amount" => "1", "unit" => "oz"]
+            ]
+        ];
     }
 }

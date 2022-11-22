@@ -24,6 +24,7 @@ class DrinkController extends Controller
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'owner' => $request->input('user'),
+            'published' => $request->input('published') ?: false,
         ]);
 
         $drink->save();
