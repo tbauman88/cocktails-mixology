@@ -37,7 +37,7 @@ class DrinkControllerTest extends TestCase
         $this->actingAs($user)
             ->postJson(route('drinks.store'), $payload)
             ->assertCreated()
-            ->assertJsonFragment(['public' => true]);
+            ->assertJson(['public' => true]);
     }
 
     public function test_it_will_throw_when_creating_a_duplicate_drink_name()
