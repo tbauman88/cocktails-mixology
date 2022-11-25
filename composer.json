@@ -46,7 +46,6 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "refresh-test-db": "php artisan migrate --env=testing --seed",
         "tests": "php artisan test"
     },
     "extra": {
